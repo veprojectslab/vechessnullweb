@@ -3,7 +3,13 @@
 <body>
   <p id="outp"></p>
   <script>
-    result = "Some test";
+    function httpGet(theUrl) {
+      var xmlHttp = new XMLHttpRequest();
+      xmlHttp.open("GET", theUrl, false);
+      xmlHttp.send(null);
+      return xmlHttp.responseText;
+    }
+    result = httpGet("http://site0.metamath.ru/api/state/")
     document.getElementById("outp").innerHTML = result;
   </script>
 </body>

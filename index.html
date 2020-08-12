@@ -2,96 +2,105 @@
 <head></head>
 <body>
   <p id="outp"></p>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script>
     function httpGet(theUrl) {
       var xmlHttp = new XMLHttpRequest();
-      xmlHttp.open("GET", theUrl, false); // false for synchronous request
+      xmlHttp.open("GET", theUrl, false);
       xmlHttp.send(null);
       return xmlHttp.responseText;
     }
+
+    function httpPost(theUrl, data) {
+      var xmlHttp = new XMLHttpRequest();
+      xmlHttp.open("POST", theUrl, false);
+      xmlHttp.send(data);
+      return xmlHttp.responseText;
+    }
+
+    function output_state_metadata() {
+      result = httpGet("/api/state/");
+      var last_turn_number = JSON.parse(result)["meta_state"]["turn_number"];
+      var last_turn_time = JSON.parse(result)["board_state"]["MoveTime"];
+      var last_turn_user = JSON.parse(result)["board_state"]["U"];
+      document.getElementById("outp").innerHTML = `Last turn number: ${last_turn_number}; last turn time: ${last_turn_time}; last turn user: ${last_turn_user}`;
+    }
+
+    function init_moveform_with_data(d) {
+      var moveform = document.getElementById("moveform");
+      keys_array = ["B1B", "B1W", "B2B", "B2W", "KB", "KW", "N1B", "N1W", "N2B", "N2W", "P1B", "P1W", "P2B", "P2W", "P3B", "P3W", "P4B", "P4W", "P5B", "P5W", "P6B", "P6W", "P7B", "P7W", "P8B", "P8W", "QB", "QW", "R1B", "R1W", "R2B", "R2W"]
+      for(i of keys_array) {
+        moveform[i]["value"] = d[i]
+      }
+    }
+
     function initAction(form) {
-      httpGet("http://site0.metamath.ru/api/init/");
-      document.getElementById("outp").innerHTML = httpGet("http://site0.metamath.ru/api/state/");
+      httpGet("/api/init/");
+      output_state_metadata();
+      result = JSON.parse(httpGet("/api/state/"))["board_state"]
+      init_moveform_with_data(result)
     }
+    
+    function form_obj_prepare(obj) {
+      var ret = {};
+      for(a of obj) {
+        ret[a["name"]] = a["value"];
+      }
+      return ret;
+    }
+    
     function moveAction(form) {
-      var text1 = form.B1B.value;
-      httpGet("http://site0.metamath.ru/api/init/");
-      document.getElementById("outp").innerHTML = httpGet("http://site0.metamath.ru/api/state/");
+      httpPost("/api/newmove/", JSON.stringify(form_obj_prepare($(form).serializeArray())));
+      output_state_metadata();
     }
-    result = httpGet("http://site0.metamath.ru/api/state/")
-    document.getElementById("outp").innerHTML = httpGet("http://site0.metamath.ru/api/state/");
-  /* B1B.value
-  B1W.value
-  B2B.value
-  B2W.value
-  KB.value
-  KW.value
-  N1B.value
-  N1W.value
-  N2B.value
-  N2W.value
-  P1B.value
-  P1W.value
-  P2B.value
-  P2W.value
-  P3B.value
-  P3W.value
-  P4B.value
-  P4W.value
-  P5B.value
-  P5W.value
-  P6B.value
-  P6W.value
-  P7B.value
-  P7W.value
-  P8B.value
-  P8W.value
-  QB.value
-  QW.value
-  R1B.value
-  R1W.value
-  R2B.value
-  R2W.value */
+    
+    output_state_metadata();
   </script>
-  <form name="myform2" action="" method="GET">Click for move: <br>
-  <input type="text" name="B1B" value="F8">
-  <input type="text" name="B1W" value="C1">
-  <input type="text" name="B2B" value="F8">
-  <input type="text" name="B2W" value="C1">
-  <input type="text" name="KB" value="F8">
-  <input type="text" name="KW" value="C1">
-  <input type="text" name="N1B" value="F8">
-  <input type="text" name="N1W" value="C1">
-  <input type="text" name="N2B" value="F8">
-  <input type="text" name="N2W" value="C1">
-  <input type="text" name="P1B" value="F8">
-  <input type="text" name="P1W" value="C1">
-  <input type="text" name="P2B" value="F8">
-  <input type="text" name="P2W" value="C1">
-  <input type="text" name="P3B" value="F8">
-  <input type="text" name="P3W" value="C1">
-  <input type="text" name="P4B" value="F8">
-  <input type="text" name="P4W" value="C1">
-  <input type="text" name="P5B" value="F8">
-  <input type="text" name="P5W" value="C1">
-  <input type="text" name="P6B" value="F8">
-  <input type="text" name="P6W" value="C1">
-  <input type="text" name="P7B" value="F8">
-  <input type="text" name="P7W" value="C1">
-  <input type="text" name="P8B" value="F8">
-  <input type="text" name="P8W" value="C1">
-  <input type="text" name="QB" value="F8">
-  <input type="text" name="QW" value="C1">
-  <input type="text" name="R1B" value="F8">
-  <input type="text" name="R1W" value="C1">
-  <input type="text" name="R2B" value="F8">
-  <input type="text" name="R2W" value="C1">
+
+  <form id="moveform" name="myform2" action="" method="GET">Submit to make a move: <br>
+  P1W <input type="text" name="P1W" value="default" size="5">
+  P2W <input type="text" name="P2W" value="default" size="5">
+  P3W <input type="text" name="P3W" value="default" size="5">
+  P4W <input type="text" name="P4W" value="default" size="5">
+  P5W <input type="text" name="P5W" value="default" size="5">
+  P6W <input type="text" name="P6W" value="default" size="5">
+  P7W <input type="text" name="P7W" value="default" size="5">
+  P8W <input type="text" name="P8W" value="default" size="5"><br>
+  B1W <input type="text" name="B1W" value="default" size="5">
+  B2W <input type="text" name="B2W" value="default" size="5">
+  KW <input type="text" name="KW" value="default" size="5">
+  N1W <input type="text" name="N1W" value="default" size="5">
+  N2W <input type="text" name="N2W" value="default" size="5">
+  QW <input type="text" name="QW" value="default" size="5">
+  R1W <input type="text" name="R1W" value="default" size="5">
+  R2W <input type="text" name="R2W" value="default" size="5"><br>
+  P1B <input type="text" name="P1B" value="default" size="5">
+  P2B <input type="text" name="P2B" value="default" size="5">
+  P3B <input type="text" name="P3B" value="default" size="5">
+  P4B <input type="text" name="P4B" value="default" size="5">
+  P5B <input type="text" name="P5B" value="default" size="5">
+  P6B <input type="text" name="P6B" value="default" size="5">
+  P7B <input type="text" name="P7B" value="default" size="5">
+  P8B <input type="text" name="P8B" value="default" size="5"><br>
+  B1B <input type="text" name="B1B" value="default" size="5">
+  B2B <input type="text" name="B2B" value="default" size="5">
+  KB <input type="text" name="KB" value="default" size="5">
+  N1B <input type="text" name="N1B" value="default" size="5">
+  N2B <input type="text" name="N2B" value="default" size="5">
+  QB <input type="text" name="QB" value="default" size="5">
+  R1B <input type="text" name="R1B" value="default" size="5">
+  R2B <input type="text" name="R2B" value="default" size="5"><br>
+  <input type="button" name="button" Value="MoveButton" onClick="moveAction(this.form)">
+
+  <script>
+    result = JSON.parse(httpGet("/api/state/"))["board_state"]
+    init_moveform_with_data(result)
+  </script>
+
   <br>
-  <input type="button" name="button" Value="Click" onClick="moveAction(this.form)">
   <br>
+  <form id="initform" name="myform1" action="" method="GET">Submit to initialize the board:
   <br>
-  <form name="myform1" action="" method="GET">Click for init the board:
-  <br>
-  <input type="button" name="button" Value="Click" onClick="initAction(this.form)">
+  <input type="button" name="button" Value="InitButton" onClick="initAction(this.form)">
 </body>
 </html>

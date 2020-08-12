@@ -5,12 +5,93 @@
   <script>
     function httpGet(theUrl) {
       var xmlHttp = new XMLHttpRequest();
-      xmlHttp.open("GET", theUrl, false);
+      xmlHttp.open("GET", theUrl, false); // false for synchronous request
       xmlHttp.send(null);
       return xmlHttp.responseText;
     }
+    function initAction(form) {
+      httpGet("http://site0.metamath.ru/api/init/");
+      document.getElementById("outp").innerHTML = httpGet("http://site0.metamath.ru/api/state/");
+    }
+    function moveAction(form) {
+      var text1 = form.B1B.value;
+      httpGet("http://site0.metamath.ru/api/init/");
+      document.getElementById("outp").innerHTML = httpGet("http://site0.metamath.ru/api/state/");
+    }
     result = httpGet("http://site0.metamath.ru/api/state/")
-    document.getElementById("outp").innerHTML = result;
+    document.getElementById("outp").innerHTML = httpGet("http://site0.metamath.ru/api/state/");
+  /* B1B.value
+  B1W.value
+  B2B.value
+  B2W.value
+  KB.value
+  KW.value
+  N1B.value
+  N1W.value
+  N2B.value
+  N2W.value
+  P1B.value
+  P1W.value
+  P2B.value
+  P2W.value
+  P3B.value
+  P3W.value
+  P4B.value
+  P4W.value
+  P5B.value
+  P5W.value
+  P6B.value
+  P6W.value
+  P7B.value
+  P7W.value
+  P8B.value
+  P8W.value
+  QB.value
+  QW.value
+  R1B.value
+  R1W.value
+  R2B.value
+  R2W.value */
   </script>
+  <form name="myform2" action="" method="GET">Click for move: <br>
+  <input type="text" name="B1B" value="F8">
+  <input type="text" name="B1W" value="C1">
+  <input type="text" name="B2B" value="F8">
+  <input type="text" name="B2W" value="C1">
+  <input type="text" name="KB" value="F8">
+  <input type="text" name="KW" value="C1">
+  <input type="text" name="N1B" value="F8">
+  <input type="text" name="N1W" value="C1">
+  <input type="text" name="N2B" value="F8">
+  <input type="text" name="N2W" value="C1">
+  <input type="text" name="P1B" value="F8">
+  <input type="text" name="P1W" value="C1">
+  <input type="text" name="P2B" value="F8">
+  <input type="text" name="P2W" value="C1">
+  <input type="text" name="P3B" value="F8">
+  <input type="text" name="P3W" value="C1">
+  <input type="text" name="P4B" value="F8">
+  <input type="text" name="P4W" value="C1">
+  <input type="text" name="P5B" value="F8">
+  <input type="text" name="P5W" value="C1">
+  <input type="text" name="P6B" value="F8">
+  <input type="text" name="P6W" value="C1">
+  <input type="text" name="P7B" value="F8">
+  <input type="text" name="P7W" value="C1">
+  <input type="text" name="P8B" value="F8">
+  <input type="text" name="P8W" value="C1">
+  <input type="text" name="QB" value="F8">
+  <input type="text" name="QW" value="C1">
+  <input type="text" name="R1B" value="F8">
+  <input type="text" name="R1W" value="C1">
+  <input type="text" name="R2B" value="F8">
+  <input type="text" name="R2W" value="C1">
+  <br>
+  <input type="button" name="button" Value="Click" onClick="moveAction(this.form)">
+  <br>
+  <br>
+  <form name="myform1" action="" method="GET">Click for init the board:
+  <br>
+  <input type="button" name="button" Value="Click" onClick="initAction(this.form)">
 </body>
 </html>

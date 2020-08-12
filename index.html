@@ -23,7 +23,8 @@
       var last_turn_number = JSON.parse(result)["meta_state"]["turn_number"];
       var last_turn_time = JSON.parse(result)["board_state"]["MoveTime"];
       var last_turn_user = JSON.parse(result)["board_state"]["U"];
-      document.getElementById("outp").innerHTML = `Last turn number: ${last_turn_number}; last turn time: ${last_turn_time}; last turn user: ${last_turn_user}`;
+      var last_turn_bs = result;
+      document.getElementById("outp").innerHTML = `Last turn number: ${last_turn_number}; last turn time: ${last_turn_time}; last turn user: ${last_turn_user};<br><br>Whole board state:<br>${last_turn_bs}`;
     }
 
     function init_moveform_with_data(d) {

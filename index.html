@@ -19,7 +19,7 @@
     }
 
     function output_state_metadata() {
-      result = httpGet("/api/state/");
+      result = httpGet(window.location.pathname + "/api/state/");
       var last_turn_number = JSON.parse(result)["meta_state"]["turn_number"];
       var last_turn_time = JSON.parse(result)["board_state"]["MoveTime"];
       var last_turn_user = JSON.parse(result)["board_state"]["U"];
@@ -36,9 +36,9 @@
     }
 
     function initAction(form) {
-      httpGet("/api/init/");
+      httpGet(window.location.pathname + "/api/init/");
       output_state_metadata();
-      result = JSON.parse(httpGet("/api/state/"))["board_state"]
+      result = JSON.parse(httpGet(window.location.pathname + "/api/state/"))["board_state"]
       init_moveform_with_data(result)
     }
     
@@ -51,7 +51,7 @@
     }
     
     function moveAction(form) {
-      httpPost("/api/newmove/", JSON.stringify(form_obj_prepare($(form).serializeArray())));
+      httpPost(window.location.pathname + "/api/newmove/", JSON.stringify(form_obj_prepare($(form).serializeArray())));
       output_state_metadata();
     }
     
@@ -94,7 +94,7 @@
   <input type="button" name="button" Value="MoveButton" onClick="moveAction(this.form)">
 
   <script>
-    result = JSON.parse(httpGet("/api/state/"))["board_state"]
+    result = JSON.parse(httpGet(window.location.pathname + "/api/state/"))["board_state"]
     init_moveform_with_data(result)
   </script>
 
